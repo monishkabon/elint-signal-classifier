@@ -1,0 +1,61 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+def masterSdiff (filePath , thresholdCount = 150):
+    
+    df = pd.read_csv(filePath)
+    
+    toaArray = df["ToA"].values
+    
+    print (f"Total Pulses: {len(toaArray)}")
+    
+    diffLvl1 = np.diff(toaArray)
+    
+    diffLvl2 = toaArray[2:] - toaArray[:-2]
+    
+    diffLvl3 = toaArray[3:] - toaArray[:-3]
+    
+    masterDiff = np.concatenate([diffLvl1, diffLvl2, diffLvl3])
+    
+    counts , binEdges = np.histogram(masterDiff, bins=3500 , range=(0, 3500))
+    
+    thresholdCount = 25000
+    
+    rawPris = []
+    
+    for i in range (len(counts)):
+        if counts[i] > thresholdCount:
+            rawPris.append(int(binEdges[i]))
+            
+    cleanPris = []
+    
+    for pris in rawPris:
+        if not cleanPris or (pris - cleanPris[-1] > 10):
+            cleanPris.append(pris)
+            
+    print(f"Detection Threshold set at {thresholdCount} occurrences.")    
+    print(f"Raw Emitter PRIs extracted from noise: {rawPris} µs")
+    print(f"Clean Emitter PRIs extracted from noise: {cleanPris} µs")
+    
+    plt.figure(figsize=(12, 6))
+    
+    plt.hist(masterDiff, bins=800, range=(0, 3500), color='skyblue', edgecolor='black')
+    
+    plt.axhline (y=thresholdCount, color='red', linestyle='--', label=f'Threshold: {thresholdCount}')
+    
+    
+    plt.title("Master SDIF (Levels 1-3) & Automated Threshold Extraction")
+    plt.xlabel("Time Difference (µs)")
+    plt.ylabel("Number of Occurrences")
+    plt.legend()
+    plt.grid(axis='y', alpha=0.5)
+    plt.show()
+    
+    
+if __name__ == "__main__":
+    
+    filePath = "interleaved_signals_40k.csv"
+    masterSdiff(filePath, thresholdCount=150)
+    
+    
