@@ -47,10 +47,9 @@ def classifyTrack (trackPulses , trackName = "unknown"):
             shortestDistance = distance
             bestMatch = threatName
             
-            
-        print(f"Result: {bestMatch} (Proximity Score: {shortestDistance:.2f})")
-        
-        return bestMatch
+    print(f"Result: {bestMatch} (Proximity Score: {shortestDistance:.2f})")
+    
+    return bestMatch
     
 
 if __name__ == "__main__":

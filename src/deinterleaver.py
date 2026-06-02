@@ -55,7 +55,7 @@ def masterSdiff (filePath , thresholdCount = 150):
     
 if __name__ == "__main__":
     
-    filePath = "interleaved_signals_40k.csv"
+    filePath = "/Users/moni/Desktop/radarClassification/data/interleaved_signals_40k.csv"
     masterSdiff(filePath, thresholdCount=150)
     
     
